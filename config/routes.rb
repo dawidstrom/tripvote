@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :votes
   devise_for :users
   resources :cities
   root to: "cities#index"

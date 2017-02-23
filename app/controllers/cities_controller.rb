@@ -1,7 +1,7 @@
 class CitiesController < ApplicationController
   before_action :set_city, only: [:show, :edit, :update, :destroy]
   before_action :authenticate_user!
-  
+
   # GET /cities
   # GET /cities.json
   def index
@@ -26,9 +26,10 @@ class CitiesController < ApplicationController
   # POST /cities.json
   def create
     @city = City.new(city_params)
-
+    v = VoteableItem.new
+    v.item = @city
     respond_to do |format|
-      if @city.save
+      if @city.save && v.save
         format.html { redirect_to @city, notice: 'City was successfully created.' }
         format.json { render :show, status: :created, location: @city }
       else
