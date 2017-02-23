@@ -5,7 +5,11 @@ class VotesController < ApplicationController
   # GET /votes
   # GET /votes.json
   def index
-    @items = VoteableItem.all
+    @items_and_votes = []
+    VoteableItem.all.each do |i|
+      @items_and_votes.push([i, Vote.where(:voteable_item_id => i.id).pluck(:value).reduce(:+)])
+    end
+    p @items_and_votes
   end
 
   # GET /votes/new
@@ -21,13 +25,14 @@ class VotesController < ApplicationController
   # get /votes/:id
   # get /votes.json/:id
   def create
-    my_votes = Vote.where(:user_id => current_user.id, :voteable_item_id => params[:id]).all
+    my_votes = Vote.where(:user_id => current_user.id, :voteable_item_id => params[:id]).first
     unless my_votes.nil?
       return redirect_to '/', notice: "you already voted on this"
     end
     @vote = Vote.new
     @vote.voteable_item = VoteableItem.find(params[:id])
     @vote.user = current_user
+    @vote.value = params[:value]
 
     respond_to do |format|
       if @vote.save

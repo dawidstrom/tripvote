@@ -10,9 +10,10 @@
   </thead>
 
   <tbody>
-    <% @items.each do |item| %>
+    <% @items_and_votes.each do |item| %>
       <tr>
-        <td></td>
+        <td><%= item[0].item.name %></td>
+        <td><%= item[1] %></td>
       </tr>
     <% end %>
   </tbody>
@@ -20,4 +21,6 @@
 
 <br>
 
+<%= link_to 'New City', new_city_path %>
+<br>
 <%= link_to 'New Vote', '/votes/new' %>

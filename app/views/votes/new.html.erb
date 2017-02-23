@@ -1,7 +1,8 @@
 <h1>Vote</h1>
 <% if @item.item_type == "City" %>
-  <p><%= @item.item.name %></p>
-  <p><%= @item.item.country %></p>
-  <%= link_to create_vote_url(@item.item_id), create_vote_url(@item.item_id) %>
+  <p><%= @item.item.name %>, <%= ISO3166::Country.new(@item.item.country).name %></p>
+  <p><%= link_to "Jag vill åka hit", create_vote_url(@item.item_id, 1) %></p>
+  <p><%= link_to "/bry", create_vote_url(@item.item_id, 0) %></p>
+  <p><%= link_to "Jag vill INTE åka hit", create_vote_url(@item.item_id, -1) %></p>
 <% end %>
 <%= link_to 'Back', '/' %>

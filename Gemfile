@@ -34,6 +34,7 @@ gem 'jbuilder', '~> 2.5'
 
 gem 'simple_form'
 gem 'country_select'
+gem 'countries'
 gem 'devise'
 
 # Use Capistrano for deployment

@@ -182,6 +182,7 @@ PLATFORMS
 DEPENDENCIES
   byebug
   coffee-rails (~> 4.2)
+  countries
   country_select
   devise
   jbuilder (~> 2.5)
