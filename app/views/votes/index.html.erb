@@ -1,6 +1,6 @@
 <p id="notice"><%= notice %></p>
 
-<h1>Votes</h1>
+<h1>Ranking</h1>
 
 <table>
   <thead>
@@ -10,11 +10,9 @@
   </thead>
 
   <tbody>
-    <% @votes.each do |vote| %>
+    <% @items.each do |item| %>
       <tr>
-        <td><%= link_to 'Show', vote %></td>
-        <td><%= link_to 'Edit', edit_vote_path(vote) %></td>
-        <td><%= link_to 'Destroy', vote, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td></td>
       </tr>
     <% end %>
   </tbody>
@@ -22,4 +20,4 @@
 
 <br>
 
-<%= link_to 'New Vote', new_vote_path %>
+<%= link_to 'New Vote', '/votes/new' %>

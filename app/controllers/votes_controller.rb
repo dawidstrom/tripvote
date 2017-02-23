@@ -1,34 +1,33 @@
 class VotesController < ApplicationController
-  before_action :set_vote, only: [:show, :edit, :update, :destroy]
+  before_action :set_vote, only: [:destroy]
+  before_action :authenticate_user!
 
   # GET /votes
   # GET /votes.json
   def index
-    @votes = Vote.all
-  end
-
-  # GET /votes/1
-  # GET /votes/1.json
-  def show
+    @items = VoteableItem.all
   end
 
   # GET /votes/new
   def new
     @vote = Vote.new
+    my_votes = Vote.where(:user_id => current_user.id).all
+    @item = VoteableItem.where.not(:id => my_votes.map{|v| v.voteable_item_id}).sample
+    if @item.nil?
+      redirect_to '/', notice: 'No new items to vote on.'
+    end
   end
 
-  # GET /votes/1/edit
-  def edit
-  end
-
-  # POST /votes
-  # POST /votes.json
+  # get /votes/:id
+  # get /votes.json/:id
   def create
-    @vote = Vote.new(vote_params)
+    @vote = Vote.new
+    @vote.voteable_item = VoteableItem.find(params[:id])
+    @vote.user = current_user
 
     respond_to do |format|
       if @vote.save
-        format.html { redirect_to @vote, notice: 'Vote was successfully created.' }
+        format.html { redirect_to '/', notice: 'Vote was successfully created.' }
         format.json { render :show, status: :created, location: @vote }
       else
         format.html { render :new }
@@ -36,21 +35,6 @@ class VotesController < ApplicationController
       end
     end
   end
-
-  # PATCH/PUT /votes/1
-  # PATCH/PUT /votes/1.json
-  def update
-    respond_to do |format|
-      if @vote.update(vote_params)
-        format.html { redirect_to @vote, notice: 'Vote was successfully updated.' }
-        format.json { render :show, status: :ok, location: @vote }
-      else
-        format.html { render :edit }
-        format.json { render json: @vote.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
   # DELETE /votes/1
   # DELETE /votes/1.json
   def destroy
