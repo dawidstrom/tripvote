@@ -9,7 +9,6 @@ class VotesController < ApplicationController
     VoteableItem.all.each do |i|
       @items_and_votes.push([i, Vote.where(:voteable_item_id => i.id).pluck(:value).reduce(:+)])
     end
-    p @items_and_votes
   end
 
   # GET /votes/new
