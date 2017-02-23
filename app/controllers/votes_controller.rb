@@ -21,6 +21,10 @@ class VotesController < ApplicationController
   # get /votes/:id
   # get /votes.json/:id
   def create
+    my_votes = Vote.where(:user_id => current_user.id, :voteable_item_id => params[:id]).all
+    unless my_votes.nil?
+      return redirect_to '/', notice: "you already voted on this"
+    end
     @vote = Vote.new
     @vote.voteable_item = VoteableItem.find(params[:id])
     @vote.user = current_user
