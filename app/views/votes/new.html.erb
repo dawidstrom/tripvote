@@ -1,8 +1,18 @@
 <h1>Vote</h1>
 <% if @item.item_type == "City" %>
   <p><%= @item.item.name %>, <%= ISO3166::Country.new(@item.item.country).name %></p>
-  <p><%= link_to "Jag vill åka hit", create_vote_url(@item.item_id, 1) %></p>
-  <p><%= link_to "/bry", create_vote_url(@item.item_id, 0) %></p>
-  <p><%= link_to "Jag vill INTE åka hit", create_vote_url(@item.item_id, -1) %></p>
+  <%= simple_form_for(@vote) do |f| %>
+    <%= f.input :id, :as => :hidden, :input_html => { :value => @item.id } %>
+    <table>
+      <th>-1</th>
+      <th>0</th>
+      <th>1</th>
+      <th>2</th>
+    </table>
+    <%= f.range_field :value, :min=>-1, :max=>2, :class=>"slide", :id=>"vote_value"%>
+    <div class="actions">
+      <%= f.submit %>
+    </div>
+  <% end %>
 <% end %>
 <%= link_to 'Back', '/' %>

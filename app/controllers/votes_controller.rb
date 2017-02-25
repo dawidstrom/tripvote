@@ -7,7 +7,7 @@ class VotesController < ApplicationController
   def index
     @items_and_votes = []
     VoteableItem.all.each do |i|
-      @items_and_votes.push([i, Vote.where(:voteable_item_id => i.id).pluck(:value).reduce(:+)])
+      @items_and_votes.push([i, Vote.where(:voteable_item_id => i.id).pluck(:value).reduce(:+)]).sort
     end
   end
 
@@ -24,23 +24,27 @@ class VotesController < ApplicationController
   # get /votes/:id
   # get /votes.json/:id
   def create
-    my_votes = Vote.where(:user_id => current_user.id, :voteable_item_id => params[:id]).first
-    unless my_votes.nil?
-      return redirect_to '/', notice: "you already voted on this"
+    unless vote_params[:value].to_d.between?(-1,2)
+      return redirect_to '/', notice: "value out of range"
     end
-    @vote = Vote.new
-    @vote.voteable_item = VoteableItem.find(params[:id])
-    @vote.user = current_user
-    @vote.value = params[:value]
 
-    respond_to do |format|
-      if @vote.save
-        format.html { redirect_to '/', notice: 'Vote was successfully created.' }
-        format.json { render :show, status: :created, location: @vote }
+    my_votes = Vote.where(:user_id => current_user.id, :voteable_item_id => vote_params[:id]).first
+    @vote = my_votes
+    if my_votes.nil?
+      @vote = Vote.new
+    end
+    @vote.voteable_item = VoteableItem.find(vote_params[:id])
+    @vote.user = current_user
+    @vote.value = vote_params[:value]
+
+    if @vote.save
+      if my_votes.nil?
+        redirect_to '/', notice: 'Vote was successfully created.'
       else
-        format.html { render :new }
-        format.json { render json: @vote.errors, status: :unprocessable_entity }
+        redirect_to '/', notice: 'Vote was successfully updated.'
       end
+    else
+      render :new
     end
   end
   # DELETE /votes/1
@@ -61,6 +65,6 @@ class VotesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def vote_params
-      params.fetch(:vote, {})
+      params.require(:vote).permit([:value, :id])
     end
 end
